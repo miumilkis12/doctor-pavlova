@@ -1210,6 +1210,10 @@ body.is-scrolling .rv-track, body.is-scrolling .mq-track { animation-play-state:
   .iv-step .iv-k { font-size: 40px !important; }
 }
 
+/* карусель отзывов на сенсорных экранах — без CSS-анимации (ведёт JS) */
+.rv-js .rv-track { animation: none !important; }
+@media (hover: none) { .rv-card:hover { transform: none; } }
+
 /* ===================== beauty-quiz ===================== */
 .quiz { margin-top: 8px; }
 .qz-card { position: relative; overflow: hidden; isolation: isolate; color: #f6ece1; padding: clamp(24px, 4vw, 52px);
@@ -2592,6 +2596,12 @@ applyCfg();
   const half = Math.ceil(REVS.length / 2), rows = [REVS.slice(0, half), REVS.slice(half)];
   const el = document.getElementById('revRows'); if (!el) return;
   el.innerHTML = rows.map((r, i) => `<div class="rv-row${i ? ' rev' : ''}"><div class="rv-track">${(r.map(card).join('')).repeat(2)}</div></div>`).join('');
+  // на сенсорных экранах карусель ведёт JS по времени: не залипает от касаний и не замирает при прокрутке
+  if (matchMedia('(hover: none)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.classList.add('rv-js'); const tr = [...el.querySelectorAll('.rv-track')], T0 = performance.now(); let vis = true;
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => { vis = es[0].isIntersecting; }, { rootMargin: '200px' }).observe(el);
+    const loop = now => { if (vis && !document.hidden) tr.forEach((k, i) => { const h = k.scrollWidth / 2; if (!h) return; const dur = i ? 82000 : 70000, x = ((now - T0) / dur * h) % h; k.style.transform = `translate3d(${-(i ? h - x : x)}px,0,0)`; }); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop); }
   document.getElementById('revNum').textContent = REV_STAT.rating;
   document.getElementById('revMeta').textContent = `${REV_STAT.count} отзыва · ${REV_STAT.five} из них на 5★ · ${REV_STAT.src}`; })();
 document.getElementById('homeWorks').innerHTML = WORKS.slice(0, 3).map(ba).join('');

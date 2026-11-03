@@ -3199,10 +3199,6 @@ document.addEventListener('mousemove', e => { const c = e.target.closest && e.ta
    Rendered with an opaque black clear colour + CSS mix-blend-mode: screen,
    so glowing gold reads on top of the page's light leaks without bloom killing alpha. */
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/+esm';
-import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js/+esm';
-import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js/+esm';
-import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js/+esm';
-import { OutputPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/OutputPass.js/+esm';
 
 const C = { deep: 0x2A170A, bronzeD: 0x9A6535, bronze: 0xC48C55, gold: 0xE7BD88, goldL: 0xF3D3A3, champ: 0xFFF1DC, rose: 0xD9A894 };
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -3226,10 +3222,9 @@ function base(container, { fov = 35, bloom = [0.8, 0.6, 0.2] } = {}) {
   const cv = renderer.domElement; cv.className = 'iv3d-cv'; container.appendChild(cv);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 200);
-  const composer = new EffectComposer(renderer);
-  composer.addPass(new RenderPass(scene, camera));
-  if (bloom) { const bp = new UnrealBloomPass(new THREE.Vector2(256, 256), mob ? bloom[0] * .7 : bloom[0], bloom[1], bloom[2]); composer.addPass(bp); }
-  composer.addPass(new OutputPass());
+  // без постобработки (EffectComposer/bloom): на ряде видеокарт давал цветные квадраты и шум
+  const composer = { render: () => renderer.render(scene, camera), setSize() {}, dispose() {} };
+  if (bloom) renderer.toneMappingExposure = 1.25;
   const o = { mob, renderer, scene, camera, composer, container, w: 1, h: 1,
     resize() { const w = container.clientWidth || 1, h = container.clientHeight || 1; o.w = w; o.h = h; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); composer.setSize(w, h); },
     halfW(dist) { return Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * dist * camera.aspect; },

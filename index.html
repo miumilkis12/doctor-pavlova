@@ -1174,6 +1174,35 @@ label.check a { color: inherit; text-decoration: underline; text-underline-offse
 .cabph .veil, .cabph::after, .cabph::before { display: none !important; }
 .cabph img { filter: brightness(.55) !important; transform: none !important; transition: filter .8s ease !important; }
 .cabph:hover img, .cabph.clear img { filter: none !important; }
+/* карусель отзывов: плавно, без остановок при прокрутке */
+.rv-track { will-change: transform; transform: translate3d(0,0,0); backface-visibility: hidden; }
+@keyframes mq { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+body.is-scrolling .rv-track, body.is-scrolling .mq-track { animation-play-state: running !important; }
+.rv-card { box-shadow: 0 10px 24px -20px rgba(70,40,15,.45); contain: layout paint; }
+@media (max-width: 860px) { .rv-card:hover { transform: none; } .rv-row:hover .rv-track { animation-play-state: running; } .rv-track { animation-duration: 70s; } .rv-row.rev .rv-track { animation-duration: 82s; } }
+
+/* ---------- мобильная версия «Инноваций» ---------- */
+@media (max-width: 860px) {
+  .iv-mask-w { font-size: 10.4vw !important; letter-spacing: 0 !important; max-width: 94vw; }
+  .iv-mask-s { font-size: 7.2vw !important; rotate: -3deg; max-width: 88vw; letter-spacing: .03em !important; }
+  .iv-mask-s em { font-size: 1.35em !important; margin-top: .05em !important; }
+  /* карточки технологий: рамка по высоте самого длинного текста */
+  .iv-steps { display: grid !important; min-height: 0 !important; }
+  .iv-steps > .iv-step { grid-area: 1 / 1; position: relative !important; inset: auto !important; margin: 0 !important; }
+  .iv-step h2 { font-size: 22px !important; }
+  .iv-step .iv-k { font-size: 54px !important; line-height: 1; }
+  .iv-step p { font-size: 14.5px !important; line-height: 1.55; }
+}
+@media (max-width: 860px) {
+  .iv-tech .iv-sticky { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important; box-sizing: border-box; }
+  .iv-tech-in { gap: 8px !important; }
+  .iv-orb { width: min(44vw, 190px) !important; margin-top: 0 !important; }
+  .iv-steps { margin-top: 10px !important; padding: 14px 16px !important; }
+  .iv-step .iv-k { font-size: 44px !important; }
+  .iv-step h2 { font-size: 19px !important; margin: 8px 0 8px !important; }
+  .iv-step p { font-size: 14px !important; line-height: 1.5; }
+}
+@media (max-width: 860px) { .iv-tech .iv-sticky { padding-top: 78px !important; } }
 
 /* ===================== beauty-quiz ===================== */
 .quiz { margin-top: 8px; }
@@ -1853,6 +1882,9 @@ body:not(.innov) > .iv-prog, body:not(.innov) > .iv-grain, body:not(.innov) > .i
 <div class="cursor" aria-hidden="true"></div>
 
 <script>
+/* при открытии сайта по ссылке — всегда главная и самый верх страницы */
+try { history.scrollRestoration = 'manual'; } catch (e) {}
+(() => { const h = location.hash; if (h && h !== '#/' && !/^#\/(privacy|consent)/.test(h) && !sessionStorage.getItem('pv-nav')) history.replaceState(null, '', location.pathname + location.search + '#/'); try { sessionStorage.setItem('pv-nav', '1'); } catch (e) {} scrollTo(0, 0); addEventListener('load', () => scrollTo(0, 0)); })();
 
 /* ================= data ================= */
 const P = '[— ₽]';
@@ -1865,16 +1897,16 @@ const PROBS = [
   { id: 'pores', t: 'Поры и рельеф', d: 'Расширенные поры, неровность' },
   { id: 'dry', t: 'Сухость и тусклость', d: 'Нет сияния, потеря упругости' },
   { id: 'pigment', t: 'Пигментация', d: 'Пятна, неровный тон' },
-  { id: 'nose', t: 'Форма носа', d: 'Горбинка, опущенный кончик' },
+  { id: 'nose', t: 'Форма носа', d: 'Опущенный кончик, широкие крылья' },
   { id: 'hair', t: 'Выпадение волос', d: 'Поредение, перхоть' },
   { id: 'sweat', t: 'Потливость', d: 'Подмышки, ладони, стопы' },
 ];
 const CONTRA = ['Беременность и грудное вскармливание', 'Острые инфекции, герпес и воспаления в зоне процедуры', 'Обострение хронических заболеваний', 'Аутоиммунные и онкологические заболевания', 'Нарушения свёртываемости крови', 'Индивидуальная непереносимость компонентов'];
 const S = [
-  { slug: 'botox', price: 'цена на консультации', name: 'Ботулинотерапия', cat: 'inject', img: 'z-forehead.jpg', probs: ['wrinkles'],
-    short: 'Разглаживает мимические морщины лба, межбровья и вокруг глаз.',
+  { slug: 'botox', price: 'цена на консультации', name: 'Ботулинотерапия', cat: 'inject', img: 'z-forehead.jpg', probs: ['wrinkles', 'nose'],
+    short: 'Разглаживает мимические морщины лба, межбровья и вокруг глаз, приподнимает кончик носа.',
     lead: 'Препарат ботулотоксина расслабляет мышцу, которая собирает кожу в складки. Морщины разглаживаются, мимика остаётся живой, взгляд выглядит отдохнувшим.',
-    dur: '20–30 минут', effect: 'через 7–14 дней', lasts: '4–6 месяцев', course: '1 процедура', rehab: 'не нужна', zones: ['Лоб', 'Межбровье', '«Гусиные лапки»', 'Гипергидроз'],
+    dur: '20–30 минут', effect: 'через 7–14 дней', lasts: '4–6 месяцев', course: '1 процедура', rehab: 'не нужна', zones: ['Лоб', 'Межбровье', '«Гусиные лапки»', 'Кончик и крылья носа', 'Гипергидроз'],
     for: ['Горизонтальные морщины на лбу', 'Вертикальные заломы между бровями', 'Морщинки в уголках глаз', 'Профилактика глубоких заломов'],
     steps: [['Осмотр', 'оцениваем мимику и силу мышц'], ['Разметка', 'отмечаем точки введения'], ['Инъекции', 'тонкой иглой, почти без боли'], ['Контроль', 'осмотр через 14 дней']],
     preps: ['Сертифицированные препараты ботулотоксина — подбираем на консультации'],
@@ -1898,15 +1930,15 @@ const S = [
     preps: ['Stylage (Франция)', 'Корейские филлеры на гиалуроновой кислоте'],
     after: ['Не спать лицом в подушку 2–3 ночи', '2 недели без бани и спорта', 'Не делать массаж лица 2 недели'],
     faq: [['Не будет ли «пельменей» на скулах?', 'Нет: работаю небольшими объёмами и учитываю пропорции лица.'], ['Что если не понравится?', 'Филлер на гиалуроновой кислоте можно растворить.']] },
-  { slug: 'rhino', price: 'цена на консультации', name: 'Безоперационная ринопластика', cat: 'inject', img: 'z-nose.jpg', probs: ['nose', 'volume'],
-    short: 'Маскирует горбинку и приподнимает кончик носа без операции.',
-    lead: 'Филлер выравнивает спинку носа, маскирует горбинку и приподнимает кончик. Без наркоза, разрезов и долгой реабилитации.',
-    dur: '30–40 минут', effect: 'сразу', lasts: '9–12 месяцев', course: '1 процедура', rehab: '1–2 дня', zones: ['Горбинка', 'Кончик носа', 'Спинка', 'Асимметрия'],
-    for: ['Небольшая горбинка', 'Опущенный кончик', 'Неровная спинка носа', 'Лёгкая асимметрия'],
-    steps: [['Анализ профиля', 'фото и обсуждение формы'], ['Анестезия', 'крем-анестетик'], ['Введение', 'малыми порциями'], ['Контроль', 'осмотр через 14 дней']],
-    preps: ['Stylage (Франция)', 'Корейские филлеры'],
-    after: ['2 недели не носить очки', 'Не трогать и не массировать нос', '2 недели без бани и спорта'],
-    faq: [['Нос станет больше?', 'Визуально нет: выравнивание линии делает нос аккуратнее.'], ['Всем ли подходит?', 'Нет. Сильную горбинку или проблемы с дыханием филлер не исправит, это решает хирург.']] },
+  { slug: 'rhino', price: 'цена на консультации', name: 'Коррекция носа', cat: 'inject', img: 'z-nose.jpg', probs: ['nose'],
+    short: 'Ботулинотерапия: приподнимает кончик носа и делает крылья уже.',
+    lead: 'Точечные микроинъекции ботулотоксина расслабляют мышцы, которые тянут кончик носа вниз и расширяют крылья. Кончик мягко приподнимается, крылья выглядят уже — без филлеров и операции.',
+    dur: '15–20 минут', effect: 'через 7–14 дней', lasts: '3–4 месяца', course: '1 процедура', rehab: 'не нужна', zones: ['Кончик носа', 'Крылья носа'],
+    for: ['Кончик носа опускается при улыбке', 'Крылья носа расширяются при мимике', 'Хочется аккуратнее нос без филлеров'],
+    steps: [['Консультация', 'оцениваем мимику носа'], ['Разметка', 'отмечаем точки введения'], ['Введение', 'несколько точечных микроинъекций'], ['Контроль', 'осмотр через 14 дней']],
+    preps: ['Сертифицированные препараты ботулотоксина — подбираем на консультации'],
+    after: ['4 часа не наклоняться и не ложиться', 'Не трогать и не массировать нос в день процедуры', '2 недели без бани, сауны и активного спорта'],
+    faq: [['Изменится ли форма носа?', 'Сама форма — нет: процедура работает с мимикой. Кончик перестаёт опускаться, крылья — расширяться, и нос выглядит аккуратнее.'], ['Это больно?', 'Ощущения короткие и терпимые: инъекций всего несколько.']] },
   { slug: 'lipolytics', price: '10 500 ₽', name: 'Липолитики', cat: 'lift', img: 'z-chin.jpg', probs: ['oval'],
     short: 'Уменьшают локальные жировые отложения: второй подбородок, брыли.',
     lead: 'Препарат-липолитик разрушает жировые клетки в небольшой зоне. Уходит второй подбородок, овал лица становится чётче.',
@@ -1956,7 +1988,7 @@ const S = [
     short: 'Профилактика старения, лечение постакне и уменьшение рубцов препаратом Collost Micro.',
     lead: 'Коллаген вводится в кожу и становится каркасом для собственных волокон. Кожа уплотняется, рубцы и следы постакне становятся менее заметными.',
     dur: '30–40 минут', effect: 'нарастает 2–4 недели', lasts: 'долго после курса', course: '1–3 процедуры', rehab: '1–3 дня папулы', zones: ['Лицо', 'Шея', 'Декольте', 'Рубцы и постакне'],
-    for: ['Постакне и рубцы', 'Снижение упругости', 'Мелкие морщины', 'Профилактика старения (с 18 лет)'],
+    for: ['Постакне и рубцы', 'Снижение упругости', 'Мелкие морщины', 'Профилактика старения'],
     steps: [['Осмотр', 'оцениваем состояние кожи'], ['Анестезия', 'входит в стоимость'], ['Введение', 'Collost Micro или Collost 7%'], ['Контроль', 'оценка результата']],
     preps: ['Collost Micro', 'Collost 7%', 'Коллаген'],
     after: ['Сутки без макияжа', '2 недели без бани и солярия', 'Использовать солнцезащитный крем (SPF)'],
@@ -1985,7 +2017,7 @@ const PRICES = [
   { cat: 'consult', t: 'Консультация', rows: [['consult', 'Консультация врача-косметолога', 'осмотр и план процедур', 'по записи']] },
   { cat: 'promo', t: 'Комплексы со скидкой', rows: [['lips', 'Ботулинотерапия + губы', 'свежий взгляд и форма губ · вместо 18 000 ₽', '14 000 ₽'], ['contour', 'Губы + подбородок', 'контур и пропорции · вместо 16 000 ₽', '13 000 ₽'], ['lipolytics', 'Липолитик «Стройность»', 'уменьшение объёмов тела · вместо 13 000 ₽', '10 500 ₽']] },
   { cat: 'lips', t: 'Губы', rows: [['lips', 'Коррекция губ · препарат Корея', '', '8 000 ₽'], ['lips', 'Коррекция губ · препарат Европа (Stylage)', '', '13 500 ₽'], ['lips', 'Мягкая коррекция губ', 'увлажнение и разглаживание без выраженного объёма · Корея', '7 000 ₽']] },
-  { cat: 'inject', t: 'Инъекции', rows: [['meso', 'Мезотерапия лица', 'акне, купероз, пигментация · с 12 лет', 'от 4 000 ₽'], ['biorevit', 'Биоревитализация', 'увлажнение, восстановление · с 18 лет', '7 000–9 000 ₽'], ['collagen', 'Коллагенотерапия Collost Micro', 'постакне, рубцы, профилактика старения · с 18 лет', '14 000 ₽'], ['scalp', 'Мезотерапия кожи головы', '5 мл · курс 5–7 процедур', '2 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · подмышки', 'коррекция и консультация входят', '9 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · ладони', 'коррекция и консультация входят', '9 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · стопы', 'коррекция и консультация входят', '9 900 ₽']] },
+  { cat: 'inject', t: 'Инъекции', rows: [['meso', 'Мезотерапия лица', 'акне, купероз, пигментация', 'от 4 000 ₽'], ['biorevit', 'Биоревитализация', 'увлажнение, восстановление', '7 000–9 000 ₽'], ['collagen', 'Коллагенотерапия Collost Micro', 'постакне, рубцы, профилактика старения', '14 000 ₽'], ['scalp', 'Мезотерапия кожи головы', '5 мл · курс 5–7 процедур', '2 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · подмышки', 'коррекция и консультация входят', '9 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · ладони', 'коррекция и консультация входят', '9 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · стопы', 'коррекция и консультация входят', '9 900 ₽']] },
   { cat: 'preps', t: 'Препараты и коктейли', rows: [
     ['meso', 'Melsmon', 'гидролизат плаценты', '4 900 ₽'], ['meso', 'Коктейль «Монако»', '', '6 900 ₽'], ['collagen', 'Коллаген', '', '10 900 ₽'], ['biorevit', 'Aquashine', '', '5 900 ₽'], ['meso', 'NCTF Filorga', '', '6 900 ₽'],
     ['biorevit', 'Novacutan S bio / Y bio', '', '9 900 ₽'], ['biorevit', 'Biogel', 'Red, Silver, Blue, Gold, Green, PDRN, DOM', '6 900 ₽'], ['biorevit', 'Biogel', 'Zinc, Харизма, NAD+', '6 900 ₽'], ['biorevit', 'Hyaron', '', '1 900 ₽'], ['biorevit', 'PDRN', '', '6 900 ₽'],
@@ -1997,12 +2029,9 @@ const WORKS = [
   ['lips', 'Увеличение губ', 'до / после', 'n7', 410, 512], ['contour', 'Коррекция зоны под глазами', 'до / после', 'n6', 506, 1024, 45], ['rhino', 'Коррекция носа и скул', 'до / после', 'd', 506, 1024, 40],
   ['contour', 'Носослёзная борозда, подбородок и углы Джоли', 'до / после', 'f', 506, 1024, 55], ['contour', 'Коррекция подбородка', 'до / после', 'n8', 506, 1024, 55], ['contour', 'Комплексная коррекция лица', 'до / после', 'c', 506, 1024, 55],
   ['contour', 'Комплексная коррекция лица', 'до / после', 'a', 433, 756], ['contour', 'Углы Джоли', 'до / после', 'e', 506, 1024, 68], ['biorevit', 'Биоревитализация кистей', 'до / после', 'q', 506, 1024, 45],
-  ['contour', 'Контурная пластика', 'до / после', 'm1', 506, 1024, 40], ['lips', 'Увеличение губ', 'до / после', 'm2', 506, 1024, 35], ['contour', 'Скулы', 'до / после', 'm7', 506, 1024, 35],
-  ['lips', 'Увеличение губ', 'до / после', 'm6', 428, 1000, 40], ['biorevit', 'Biogel', 'до / после', 'm9', 506, 1024, 40], ['lips', 'Увеличение губ', 'до / после', 'm5', 460, 508, 40],
-  ['lips', 'Увеличение губ', 'до / после', 'm3', 506, 1024, 55], ['lips', 'Увеличение губ', 'до / после', 'm8', 506, 1024, 50], ['lips', 'Увеличение губ', 'до / после', 'm4', 430, 326, 50],
 ];
 // single shots from the office
-const SHOTS = [['b2', 'Результат · комплексная программа'], ['l2', 'Результат · ботулинотерапия'], ['s4', 'Результат · губы'], ['n2', 'Результат · после процедуры'], ['s1', 'Результат · губы'], ['r3', 'Результат · кожа и овал'], ['s5', 'Результат · свежий взгляд'], ['i2', 'Результат · после процедуры'],
+const SHOTS = [['rm1', 'Результат · контурная пластика'], ['rm2', 'Результат · губы'], ['rm7', 'Результат · скулы'], ['rm6', 'Результат · губы'], ['rm9', 'Результат · биоревитализация'], ['rm5', 'Результат · губы'], ['rm3', 'Результат · губы'], ['rm8', 'Результат · губы'], ['rm4', 'Результат · губы'], ['b2', 'Результат · комплексная программа'], ['l2', 'Результат · ботулинотерапия'], ['s4', 'Результат · губы'], ['n2', 'Результат · после процедуры'], ['s1', 'Результат · губы'], ['r3', 'Результат · кожа и овал'], ['s5', 'Результат · свежий взгляд'], ['i2', 'Результат · после процедуры'],
   ['s2', 'Результат · губы'], ['s3', 'Результат · губы'], ['t2', 'Результат · профиль'], ['s6', 'Результат · профиль'], ['v2', 'Сразу после биоревитализации']];
 const FAQ = [
   ['Больно ли делать уколы?', 'Перед большинством процедур наносим крем-анестетик, многие филлеры уже содержат лидокаин. Обычно ощущения терпимые и короткие.'],
@@ -2101,12 +2130,12 @@ const Z = [
   { id:'undereye', zone:'Под глазами', title:'Мезотерапия зоны вокруг глаз', short:'Осветляет тёмные круги', x:57, y:33.5, side:'right', rw:6, rh:5, img:'z-undereye.jpg', zoom:'×4.0',
     text:'Курс микроинъекций осветляет тёмные круги, увлажняет тонкую кожу под глазами и сглаживает мелкие сухие морщинки.',
     facts:[['Курс','3–5 процедур'],['Интервал','7–14 дней']], label:'Препараты', preps:['Mesoeye','REVI eye','Plinest'] },
-  { id:'nose', zone:'Нос', title:'Безоперационная ринопластика', short:'Коррекция формы носа филлером', x:49, y:36, side:'right', rw:5, rh:9, img:'z-nose.jpg', zoom:'×3.0',
-    text:'Филлер на основе гиалуроновой кислоты маскирует горбинку, приподнимает кончик и выравнивает спинку носа. Без операции и реабилитации.',
-    facts:[['Эффект','сразу'],['Держится','9–12 месяцев']], label:'Филлеры', preps:['Stylage','Корейские филлеры'] },
+  { id:'nose', zone:'Нос', title:'Коррекция носа', short:'Приподнять кончик, сузить крылья', x:49, y:36, side:'right', rw:5, rh:9, img:'z-nose.jpg', zoom:'×3.0',
+    text:'Ботулинотерапия: точечные микроинъекции расслабляют мышцы, которые опускают кончик носа и расширяют крылья. Кончик мягко приподнимается, крылья выглядят уже — без филлеров.',
+    facts:[['Эффект','через 7–14 дней'],['Держится','3–4 месяца']], label:'Препараты', preps:['Сертифицированный ботулотоксин'] },
   { id:'cheek', zone:'Щёки', title:'Мезотерапия лица', short:'Акне, купероз, пигментация', x:38, y:42, side:'left', rw:7, rh:9, img:'z-cheek.jpg', zoom:'×5.0',
     text:'Коктейль под задачу кожи: лечение акне, купероза и пигментации, выравнивание тона и рельефа.',
-    facts:[['Курс','4–6 процедур'],['Возраст','с 12 лет']], label:'Препараты', preps:['NCTF Filorga','Melsmon','Коктейль «Монако»','Akvavita Revital SA'] },
+    facts:[['Курс','4–6 процедур'],['Интервал','7–14 дней']], label:'Препараты', preps:['NCTF Filorga','Melsmon','Коктейль «Монако»','Akvavita Revital SA'] },
   { id:'nasolabial', zone:'Носогубные складки', title:'Контурная пластика', short:'Заполняет носогубные складки', x:44.5, y:46.5, side:'left', rw:5, rh:7, img:'z-nasolabial.jpg', zoom:'×3.0',
     text:'Филлер на основе гиалуроновой кислоты заполняет складку изнутри. Лицо выглядит свежее без эффекта «переделанности».',
     facts:[['Эффект','сразу'],['Держится','9–12 месяцев']], label:'Филлеры', preps:['Stylage','Корейские филлеры'] },
@@ -3284,10 +3313,10 @@ function moleculeScene(container) {
   for (let i = 1; i < NA; i++) { const d = []; for (let j = 1; j < NA; j++) if (j !== i) d.push([f3[i].distanceTo(f3[j]), j]); d.sort((x, y) => x[0] - y[0]); d.slice(0, 3).forEach(([, j]) => { if (!b3.some(([x, y]) => (x === i && y === j) || (x === j && y === i))) b3.push([i, j]); }); }
   const F = [f0, f1, f2, f3], BL = [b0, b1, b2, b3];
   const SZ = [i => i === 0 ? 1.4 : i <= 6 ? .6 : .42, i => i === 0 ? .01 : .55, i => i === 0 ? .01 : .5, i => i === 0 ? 1.9 : .5];
-  const grp = new THREE.Group(); scene.add(grp);
+  const grp = new THREE.Group(); scene.add(grp); if (mob) grp.scale.setScalar(.62);
   const pal = [C.gold, C.goldL, C.bronze, C.champ, C.rose], seg = mob ? 20 : 36, atoms = [];
   for (let i = 0; i < NA; i++) {
-    const m = new THREE.MeshPhysicalMaterial({ color: pal[i % pal.length], metalness: 1, roughness: i === 0 ? .16 : .24, clearcoat: 1, clearcoatRoughness: .12, iridescence: i === 0 ? .3 : 0, emissive: C.bronzeD, emissiveIntensity: i === 0 ? .25 : .12 });
+    const m = new THREE.MeshPhysicalMaterial({ color: pal[i % pal.length], metalness: 1, roughness: i === 0 ? .16 : .24, clearcoat: 1, clearcoatRoughness: .12, iridescence: 0, emissive: C.bronzeD, emissiveIntensity: i === 0 ? .25 : .12 });
     const sp = new THREE.Mesh(new THREE.SphereGeometry(1, seg, seg), m); sp.position.copy(f0[i]); grp.add(sp); atoms.push(sp); }
   // bonds: one pool per formation, unit cylinders re-oriented every frame
   const bm = new THREE.MeshPhysicalMaterial({ color: C.bronze, metalness: 1, roughness: .3, emissive: C.bronzeD, emissiveIntensity: .15 });
@@ -3329,20 +3358,20 @@ function moleculeScene(container) {
         sz[i] = lerp(fromSz[i], SZ[si](i), e);
         atoms[i].position.copy(cur[i]); atoms[i].scale.setScalar(Math.max(.001, sz[i] * (1 + Math.sin(i * .7 + t * .8) * .07) * (1 - burst * .25)));
       }
-      pools.forEach((pool, k) => { const w = k === si ? e : k === prevSi ? 1 - e : 0; const vis = w > .01;
-        pool.forEach(c => { c.visible = vis; if (!vis) return; const A = cur[c.userData.a], Bv = cur[c.userData.b]; tmp.subVectors(Bv, A); const len = tmp.length();
-          c.position.addVectors(A, Bv).multiplyScalar(.5); c.quaternion.setFromUnitVectors(up, tmp.normalize()); const r = .11 * Math.max(.05, w) * (1 - burst * .6); c.scale.set(r, len * (k === si ? .2 + .8 * e : 1), r); }); });
+      pools.forEach((pool, k) => { const w = k === si ? e : k === prevSi ? 1 - e : 0; const vis = w > .08;
+        pool.forEach(c => { c.visible = vis; if (!vis) return; const A = cur[c.userData.a], Bv = cur[c.userData.b]; tmp.subVectors(Bv, A); const len = tmp.length(); if (!(len > 1e-3) || !isFinite(len)) { c.visible = false; return; }
+          c.position.addVectors(A, Bv).multiplyScalar(.5); c.quaternion.setFromUnitVectors(up, tmp.normalize()); const r = Math.max(.03, .11 * w * (1 - burst * .5)); c.scale.set(r, len * (k === si ? .2 + .8 * e : 1), r); }); });
       // camera glides to the formation's view, with a dolly-out on rebuild
-      const vw = VIEW[si], pv = VIEW[prevSi], ang = lerp(pv[0], vw[0], e), hgt = lerp(pv[1], vw[1], e), dist = lerp(pv[2], vw[2], e) + burst * 6;
+      const vw = VIEW[si], pv = VIEW[prevSi], ang = lerp(pv[0], vw[0], e), hgt = lerp(pv[1], vw[1], e), dist = (lerp(pv[2], vw[2], e) + burst * 6) * (mob ? 1.15 : 1);
       camera.position.set(Math.sin(ang) * dist, hgt, Math.cos(ang) * dist); camera.lookAt(0, .5, 0);
       rotY += dt * (.15 + spin * .6 + burst * 2.2); grp.rotation.y = rotY + ps * Math.PI * 1.2;
       grp.rotation.x = lerp(grp.rotation.x, (si === 1 || si === 2 ? .12 : .25) + ptr.y * .15, .05); grp.rotation.z = lerp(grp.rotation.z, -ptr.x * .1 + (si === 2 ? .35 : 0) * e, .05);
       // electrons: orbit normally, spiral outward in a burst
-      for (let i = 0; i < E; i++) { const k = i % 3, a = t * (.5 + spin * .15) * (k + 1) * (k % 2 ? -1 : 1) + i / E * 6.28 * 3, rx = 9 + k * 1.6 + burst * 5 + (si === 3 ? 1.5 : 0), tilt = k * 1.05 + .4 + si * .3;
+      for (let i = 0; i < E; i++) { const k = i % 3, a = t * (.5 + spin * .15) * (k + 1) * (k % 2 ? -1 : 1) + i / E * 6.28 * 3, rx = (9 + k * 1.6 + burst * 5 + (si === 3 ? 1.5 : 0)) * (mob ? .62 : 1), tilt = k * 1.05 + .4 + si * .3;
         const x = Math.cos(a) * rx, z = Math.sin(a) * rx * .45; ep.set([x, Math.sin(tilt) * z + (si === 1 || si === 2 ? Math.sin(a * 2) * 4 : 0), Math.cos(tilt) * z], i * 3); }
       eg.attributes.position.needsUpdate = true; el.rotation.y = grp.rotation.y * .3; elM.size = .5 + burst * .5;
-      flash.material.opacity = burst * .35; ring.scale.setScalar(.5 + tr * 22); ringM.opacity = (1 - tr) * .55 * (tr > 0 ? 1 : 0); ring.lookAt(camera.position);
-      bloomPass.strength = (mob ? .38 : .55) + burst * .7;
+      flash.material.opacity = burst * .15; ring.scale.setScalar(.5 + tr * 22); ringM.opacity = (1 - tr) * .55 * (tr > 0 ? 1 : 0); ring.lookAt(camera.position);
+      bloomPass.strength = (mob ? .38 : .55) + burst * .25;
       dust.rotation.y = t * .02 + rotY * .05;
       B.composer.render();
     } };

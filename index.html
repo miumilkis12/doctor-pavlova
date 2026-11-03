@@ -1203,6 +1203,12 @@ body.is-scrolling .rv-track, body.is-scrolling .mq-track { animation-play-state:
   .iv-step p { font-size: 14px !important; line-height: 1.5; }
 }
 @media (max-width: 860px) { .iv-tech .iv-sticky { padding-top: 78px !important; } }
+@media (max-width: 860px) {
+  .iv-orb { width: min(56vw, 230px) !important; }
+  .iv-tech .iv-sticky { padding-top: 66px !important; }
+  .iv-steps { margin-top: 4px !important; padding: 12px 14px !important; }
+  .iv-step .iv-k { font-size: 40px !important; }
+}
 
 /* ===================== beauty-quiz ===================== */
 .quiz { margin-top: 8px; }
@@ -3222,8 +3228,8 @@ function base(container, { fov = 35, bloom = [0.8, 0.6, 0.2] } = {}) {
   const camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 200);
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  const bp = new UnrealBloomPass(new THREE.Vector2(256, 256), mob ? bloom[0] * .7 : bloom[0], bloom[1], bloom[2]);
-  composer.addPass(bp); composer.addPass(new OutputPass());
+  if (bloom) { const bp = new UnrealBloomPass(new THREE.Vector2(256, 256), mob ? bloom[0] * .7 : bloom[0], bloom[1], bloom[2]); composer.addPass(bp); }
+  composer.addPass(new OutputPass());
   const o = { mob, renderer, scene, camera, composer, container, w: 1, h: 1,
     resize() { const w = container.clientWidth || 1, h = container.clientHeight || 1; o.w = w; o.h = h; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); composer.setSize(w, h); },
     halfW(dist) { return Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * dist * camera.aspect; },
@@ -3284,8 +3290,9 @@ function dnaScene(container) {
 /* ---------- 2 · Gold molecule (tech section): 4 formations that rebuild on scroll ----------
    PDRN → nucleotide cluster, PN → double helix, COL → collagen triple helix, EXO → vesicle sphere */
 function moleculeScene(container) {
-  const B = base(container, { fov: 40, bloom: [0.55, 0.45, 0.35] }), { scene, camera, mob } = B;
-  const bloomPass = B.composer.passes[1];
+  // без bloom: на части видеокарт он давал цветные квадраты-артефакты
+  const B = base(container, { fov: 40, bloom: null }), { scene, camera, mob } = B;
+  const bloomPass = { strength: 0 };
   scene.add(new THREE.HemisphereLight(0x8a6a48, 0x1a1008, .9));
   const key = new THREE.DirectionalLight(0xFFF1DC, 2.2); key.position.set(8, 12, 10); scene.add(key);
   const rim = new THREE.DirectionalLight(0xE7BD88, 2.0); rim.position.set(-6, -2, -10); scene.add(rim);
@@ -3313,19 +3320,19 @@ function moleculeScene(container) {
   for (let i = 1; i < NA; i++) { const d = []; for (let j = 1; j < NA; j++) if (j !== i) d.push([f3[i].distanceTo(f3[j]), j]); d.sort((x, y) => x[0] - y[0]); d.slice(0, 3).forEach(([, j]) => { if (!b3.some(([x, y]) => (x === i && y === j) || (x === j && y === i))) b3.push([i, j]); }); }
   const F = [f0, f1, f2, f3], BL = [b0, b1, b2, b3];
   const SZ = [i => i === 0 ? 1.4 : i <= 6 ? .6 : .42, i => i === 0 ? .01 : .55, i => i === 0 ? .01 : .5, i => i === 0 ? 1.9 : .5];
-  const grp = new THREE.Group(); scene.add(grp); if (mob) grp.scale.setScalar(.62);
+  const grp = new THREE.Group(); scene.add(grp);
   const pal = [C.gold, C.goldL, C.bronze, C.champ, C.rose], seg = mob ? 20 : 36, atoms = [];
   for (let i = 0; i < NA; i++) {
-    const m = new THREE.MeshPhysicalMaterial({ color: pal[i % pal.length], metalness: 1, roughness: i === 0 ? .16 : .24, clearcoat: 1, clearcoatRoughness: .12, iridescence: 0, emissive: C.bronzeD, emissiveIntensity: i === 0 ? .25 : .12 });
+    const m = new THREE.MeshPhysicalMaterial({ color: pal[i % pal.length], metalness: 1, roughness: i === 0 ? .16 : .24, clearcoat: 1, clearcoatRoughness: .12, iridescence: 0, emissive: C.bronzeD, emissiveIntensity: i === 0 ? .45 : .3 });
     const sp = new THREE.Mesh(new THREE.SphereGeometry(1, seg, seg), m); sp.position.copy(f0[i]); grp.add(sp); atoms.push(sp); }
   // bonds: one pool per formation, unit cylinders re-oriented every frame
-  const bm = new THREE.MeshPhysicalMaterial({ color: C.bronze, metalness: 1, roughness: .3, emissive: C.bronzeD, emissiveIntensity: .15 });
+  const bm = new THREE.MeshStandardMaterial({ color: C.bronze, metalness: 1, roughness: .3, emissive: C.bronzeD, emissiveIntensity: .35 });
   const cyl = new THREE.CylinderGeometry(1, 1, 1, 10), up = V(0, 1, 0), tmp = V(0, 0, 0);
   const pools = BL.map(list => list.map(([a, b]) => { const c = new THREE.Mesh(cyl, bm); c.userData = { a, b }; grp.add(c); return c; }));
   // electrons + dust + flash ring
   const tex = glowTex(), E = mob ? 60 : 110, ep = new Float32Array(E * 3);
   const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.BufferAttribute(ep, 3));
-  const elM = new THREE.PointsMaterial({ size: .5, map: tex, color: C.champ, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  const elM = new THREE.PointsMaterial({ size: .5, map: tex, alphaMap: tex, color: C.champ, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, alphaTest: .02 });
   const el = new THREE.Points(eg, elM); scene.add(el);
   const DU = mob ? 300 : 700, dp = new Float32Array(DU * 3);
   for (let i = 0; i < DU; i++) { const r = 9 + Math.random() * 14, th = Math.random() * 6.28, ph = Math.acos(2 * Math.random() - 1); dp.set([r * Math.sin(ph) * Math.cos(th), r * Math.sin(ph) * Math.sin(th), r * Math.cos(ph)], i * 3); }
@@ -3362,12 +3369,12 @@ function moleculeScene(container) {
         pool.forEach(c => { c.visible = vis; if (!vis) return; const A = cur[c.userData.a], Bv = cur[c.userData.b]; tmp.subVectors(Bv, A); const len = tmp.length(); if (!(len > 1e-3) || !isFinite(len)) { c.visible = false; return; }
           c.position.addVectors(A, Bv).multiplyScalar(.5); c.quaternion.setFromUnitVectors(up, tmp.normalize()); const r = Math.max(.03, .11 * w * (1 - burst * .5)); c.scale.set(r, len * (k === si ? .2 + .8 * e : 1), r); }); });
       // camera glides to the formation's view, with a dolly-out on rebuild
-      const vw = VIEW[si], pv = VIEW[prevSi], ang = lerp(pv[0], vw[0], e), hgt = lerp(pv[1], vw[1], e), dist = (lerp(pv[2], vw[2], e) + burst * 6) * (mob ? 1.15 : 1);
+      const vw = VIEW[si], pv = VIEW[prevSi], ang = lerp(pv[0], vw[0], e), hgt = lerp(pv[1], vw[1], e), dist = lerp(pv[2], vw[2], e) + burst * 6;
       camera.position.set(Math.sin(ang) * dist, hgt, Math.cos(ang) * dist); camera.lookAt(0, .5, 0);
       rotY += dt * (.15 + spin * .6 + burst * 2.2); grp.rotation.y = rotY + ps * Math.PI * 1.2;
       grp.rotation.x = lerp(grp.rotation.x, (si === 1 || si === 2 ? .12 : .25) + ptr.y * .15, .05); grp.rotation.z = lerp(grp.rotation.z, -ptr.x * .1 + (si === 2 ? .35 : 0) * e, .05);
       // electrons: orbit normally, spiral outward in a burst
-      for (let i = 0; i < E; i++) { const k = i % 3, a = t * (.5 + spin * .15) * (k + 1) * (k % 2 ? -1 : 1) + i / E * 6.28 * 3, rx = (9 + k * 1.6 + burst * 5 + (si === 3 ? 1.5 : 0)) * (mob ? .62 : 1), tilt = k * 1.05 + .4 + si * .3;
+      for (let i = 0; i < E; i++) { const k = i % 3, a = t * (.5 + spin * .15) * (k + 1) * (k % 2 ? -1 : 1) + i / E * 6.28 * 3, rx = 9 + k * 1.6 + burst * 5 + (si === 3 ? 1.5 : 0), tilt = k * 1.05 + .4 + si * .3;
         const x = Math.cos(a) * rx, z = Math.sin(a) * rx * .45; ep.set([x, Math.sin(tilt) * z + (si === 1 || si === 2 ? Math.sin(a * 2) * 4 : 0), Math.cos(tilt) * z], i * 3); }
       eg.attributes.position.needsUpdate = true; el.rotation.y = grp.rotation.y * .3; elM.size = .5 + burst * .5;
       flash.material.opacity = burst * .15; ring.scale.setScalar(.5 + tr * 22); ringM.opacity = (1 - tr) * .55 * (tr > 0 ? 1 : 0); ring.lookAt(camera.position);
@@ -3399,7 +3406,7 @@ function collagenScene(container) {
         vec4 mv=modelViewMatrix*vec4(p,1.); gl_Position=projectionMatrix*mv;
         gl_PointSize=clamp((.012+aR*.02)*uH*1.2/-mv.z*uPR,1.,10.); vC=color; vA=mix(.35,1.,k)*(.6+.4*sin(uT*1.5+aR*40.)); }`,
     fragmentShader: `varying vec3 vC; varying float vA; void main(){ float d=length(gl_PointCoord-.5)*2.; gl_FragColor=vec4(vC*exp(-d*d*4.)*vA,1.); }` });
-  const pts = new THREE.Points(g, mat); const grp = new THREE.Group(); grp.add(pts); scene.add(grp);
+  const pts = new THREE.Points(g, mat); const grp = new THREE.Group(); grp.add(pts); scene.add(grp); if (mob) grp.scale.setScalar(.78);
   const tex = glowTex(), S = mob ? 600 : 1400, sp = new Float32Array(S * 3);
   for (let i = 0; i < S; i++) { const r = 3.6 + Math.random() * 3, th = Math.random() * 6.28, ph = Math.acos(2 * Math.random() - 1); sp.set([r * Math.sin(ph) * Math.cos(th), r * Math.sin(ph) * Math.sin(th), r * Math.cos(ph)], i * 3); }
   const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));

@@ -1220,19 +1220,6 @@ body.is-scrolling .rv-track, body.is-scrolling .mq-track { animation-play-state:
 .iv3d-col { --gx: 66%; } @media (max-width: 860px) { .iv3d-col { --gx: 50%; --gy: 38%; } }
 @keyframes ivGlow { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
 
-/* ===== «Все препараты» на странице цен ===== */
-.allpreps .ap-lead { margin: 14px 0 6px; color: var(--muted); max-width: 720px; }
-.ap-g { margin-top: 26px; }
-.ap-g h3 { font-family: 'Prata', serif; font-weight: 400; font-size: clamp(18px, 1.8vw, 22px); display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(232,189,138,.22); }
-.ap-g h3 small { font-family: 'Manrope', sans-serif; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.ap-b { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 6px 18px; padding: 12px 0; border-bottom: 1px solid rgba(232,189,138,.1); align-items: start; }
-.ap-b > .ap-t:only-child { grid-column: 1 / -1; }
-.ap-n b { display: block; font-weight: 600; }
-.ap-n span { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-.ap-t { display: flex; flex-wrap: wrap; gap: 8px; }
-.ap-t i { font-style: normal; font-size: 13.5px; padding: 6px 12px; border: 1px solid rgba(232,189,138,.32); border-radius: 999px; background: rgba(232,189,138,.06); white-space: nowrap; }
-@media (max-width: 700px) { .ap-b { grid-template-columns: 1fr; } .ap-t i { white-space: normal; } }
-
 /* ===================== beauty-quiz ===================== */
 .quiz { margin-top: 8px; }
 .qz-card { position: relative; overflow: hidden; isolation: isolate; color: #f6ece1; padding: clamp(24px, 4vw, 52px);
@@ -2010,7 +1997,7 @@ const S = [
     dur: '30–40 минут', effect: 'после 2–3 процедур', lasts: '4–6 месяцев', course: '4–6 процедур', rehab: '1–2 дня', zones: ['Лицо', 'Шея', 'Кожа головы'],
     for: ['Расширенные поры', 'Неровный тон', 'Постакне', 'Тусклая кожа'],
     steps: [['Диагностика', 'тип и состояние кожи'], ['Подбор коктейля', 'под конкретную задачу'], ['Введение', 'микроинъекции'], ['Курс', 'каждые 7–14 дней']],
-    preps: ['NCTF Filorga', 'Melsmon (гидролизат плаценты)', 'Коктейль «Монако»', 'Akvavita Revital SA (янтарная кислота)'],
+    preps: ['NCTF Filorga', 'Коктейль «Монако»', 'Akvavita Revital SA (янтарная кислота)'],
     after: ['Сутки без макияжа', 'Неделю без бани', 'Использовать солнцезащитный крем (SPF)'],
     faq: [['Сколько процедур нужно?', 'Обычно курс 4–6 процедур с интервалом 7–14 дней.']] },
   { slug: 'collagen', price: '14 000 ₽', name: 'Коллагенотерапия', cat: 'care', img: 'z-cheek.jpg', probs: ['wrinkles', 'pores', 'dry'],
@@ -2048,7 +2035,7 @@ const PRICES = [
   { cat: 'lips', t: 'Губы', rows: [['lips', 'Коррекция губ · препарат Корея', '', '8 000 ₽'], ['lips', 'Коррекция губ · препарат Европа (Stylage)', '', '13 500 ₽'], ['lips', 'Мягкая коррекция губ', 'увлажнение и разглаживание без выраженного объёма · Корея', '7 000 ₽']] },
   { cat: 'inject', t: 'Инъекции', rows: [['meso', 'Мезотерапия лица', 'акне, купероз, пигментация', 'от 4 000 ₽'], ['biorevit', 'Биоревитализация', 'увлажнение, восстановление', '7 000–9 000 ₽'], ['collagen', 'Коллагенотерапия Collost Micro', 'постакне, рубцы, профилактика старения', '14 000 ₽'], ['scalp', 'Мезотерапия кожи головы', '5 мл · курс 5–7 процедур', '2 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · подмышки', 'коррекция и консультация входят', '9 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · ладони', 'коррекция и консультация входят', '9 900 ₽'], ['hyperhidrosis', 'Лечение гипергидроза · стопы', 'коррекция и консультация входят', '9 900 ₽']] },
   { cat: 'preps', t: 'Препараты и коктейли', rows: [
-    ['meso', 'Melsmon', 'гидролизат плаценты', '4 900 ₽'], ['meso', 'Коктейль «Монако»', '', '6 900 ₽'], ['collagen', 'Коллаген', '', '10 900 ₽'], ['biorevit', 'Aquashine', '', '5 900 ₽'], ['meso', 'NCTF Filorga', '', '6 900 ₽'],
+    ['meso', 'Коктейль «Монако»', '', '6 900 ₽'], ['collagen', 'Коллаген', '', '10 900 ₽'], ['biorevit', 'Aquashine', '', '5 900 ₽'], ['meso', 'NCTF Filorga', '', '6 900 ₽'],
     ['biorevit', 'Novacutan S bio / Y bio', '', '9 900 ₽'], ['biorevit', 'Biogel', 'Red, Silver, Blue, Gold, Green, PDRN, DOM', '6 900 ₽'], ['biorevit', 'Biogel', 'Zinc, Харизма, NAD+', '6 900 ₽'], ['biorevit', 'Hyaron', '', '1 900 ₽'], ['biorevit', 'PDRN', '', '6 900 ₽'],
     ['biorevit', 'Profhilo', '', '9 900 ₽'], ['collagen', 'Collost Micro', '', '15 900 ₽'], ['collagen', 'Collost 7%', '', '10 900 ₽'], ['biorevit', 'Plinest', '', '16 900 ₽'], ['meso-white', 'Mesoeye', 'зона вокруг глаз', '8 900 ₽'], ['meso-white', 'REVI eye', 'зона вокруг глаз', '8 900 ₽'],
     ['biorevit', 'REVI strong', '1 мл / 2 мл', '12 900 / 16 900 ₽'], ['meso', 'Akvavita Revital SA', 'янтарная кислота', '6 900 ₽'], ['biorevit', 'Neauvia', '', '10 900 ₽'] ] },
@@ -2110,51 +2097,10 @@ const PREPCAT = [
   ['aquashine', 'Aquashine', 'Пептиды + гиалуроновая кислота', 'Южная Корея', 'syringe'],
   ['stylage', 'Stylage', 'Филлер', 'Франция', 'syringe'],
   ['nctf', 'NCTF Filorga', 'Мезококтейль', 'Франция', 'vial'],
-  ['melsmon', 'Melsmon', 'Гидролизат плаценты', 'Япония', 'ampoule'],
   ['mesoeye', 'Mesoeye', 'Зона вокруг глаз', '', 'vial'],
   ['pdrn', 'PDRN', 'Полидезоксирибонуклеотиды', '', 'vial'],
   ['монако', 'Коктейль «Монако»', 'Мезококтейль', '', 'vial'],
   ['akvavita', 'Akvavita Revital SA', 'Янтарная кислота', '', 'vial'],
-];
-// полный список препаратов в работе (без цен) — блок «Все препараты» на странице цен
-const PREPS_ALL = [
-  { t: 'Филлеры', d: 'губы, контур, объём', b: [
-    ['Juvederm', 'Франция', ['Ultra 3', 'Ultra Smile']],
-    ['Stylage', 'Франция', ['S', 'M', 'L', 'XL', 'Hydro', 'Hydro Max', 'Lips Special']],
-    ['Belotero', 'Европа', ['Revive', 'Balance', 'Soft', 'Intense', 'Hydro', 'Lips Contour', 'Lips Shape']],
-    ['Neauvia Organic', 'Италия', ['Hydro Deluxe', 'Intense Lips', 'Intense', 'Stimulate']],
-    ['Teosyal', 'Швейцария', ['Redensity II']],
-    ['Hyamax', 'Швейцария', ['Extra Deep', 'Deep', 'Lips', 'Contour']],
-    ['Medeyra', '', ['Fine', 'Deep', 'Shape']],
-    ['Rejeunesse', 'Корея', ['Shape', 'Deep', 'Fine']],
-    ['Elasty', 'Корея', ['F', 'D', 'G']],
-    ['Tesoro', 'Корея', ['Fine', 'Deep', 'Sub-Q', 'Implant', 'Rouge', 'Collagen']],
-    ['Soon Soo Fill (E.P.T.Q.)', 'Корея', ['100', '300', '500']] ] },
-  { t: 'Биоревитализация', d: 'увлажнение и качество кожи', b: [
-    ['Novacutan', 'Франция', ['S-Bio', 'Y-Bio', 'Bio-PRO', 'F-Bio', 'F-Bio DVS', 'Bright', 'Gentle', 'Eye', 'Prima', 'Master']],
-    ['REVI', 'Россия', ['Eye', 'Silk', 'Strong', 'Style']],
-    ['Биогель', 'Россия', ['NAD+', 'PDRN WOW Eyes', 'PDRN Face', 'Hair B', 'Monako', 'Стройность']],
-    ['Profhilo', 'Италия', ['H+L']],
-    ['Jalupro', 'Италия', ['Classic', 'HMW', 'Super Hydro']],
-    ['Plinest', 'Италия', ['Plinest', 'Plinest Fast']],
-    ['Aquashine', 'Корея', ['Classic', 'BR', 'PTX']],
-    ['Другие', '', ['Ejal 40', 'Hyaron', 'Kiara Reju', 'Gem Vous', 'Ireju Aqua', 'Mesoten Aqualight']] ] },
-  { t: 'Мезотерапия', d: 'коктейли под задачу кожи', b: [
-    ['Filorga', 'Франция', ['NCTF 135 HA']],
-    ['Meso', 'США', ['Meso-Wharton P199', 'Meso-Xanthin', 'Mesoeye C71', 'Mesosculpt C71']],
-    ['Dermaheal', 'Корея', ['SR', 'SB', 'LL', 'HL', 'HSR', 'Eye Bag Solution', 'Dark Circle Solution']],
-    ['Плацентарные', '', ['Laennec', 'Melsmon']],
-    ['Другие', '', ['Hair Filler', 'PB Serum «Триада»']] ] },
-  { t: 'Коллаген и стимуляторы', d: 'плотность, рубцы, лифтинг', b: [
-    ['Collost', 'Россия', ['Micro', '7%', '15%']],
-    ['Nithya', 'Италия', ['Face', 'Shield', 'Smooth', 'Stimulate']],
-    ['Коллаген', '', ['Karisma', 'Linerase']],
-    ['Полимолочная кислота', '', ['Aesthefill', 'Fize PLA', 'Richesse PLA', 'Juvelook PLA/HA']],
-    ['Radiesse', 'Германия', ['Radiesse', 'Radiesse Lido']] ] },
-  { t: 'Липолитики', d: 'лицо и тело', b: [
-    ['', '', ['Pi', 'Lipo Long', 'Lipolab PPC', 'Lipolab V-line', 'Super V-line Solution', 'DR.Lipo+ (тело)', 'DR.Lipo+ V (лицо)', 'Light Fit', 'F & B']] ] },
-  { t: 'Пилинги', d: '', b: [
-    ['', '', ['BioRePeelCl3', 'PRX-T33']] ] },
 ];
 const prepOf = t => { const s = String(t).toLowerCase(); return PREPCAT.find(p => s.includes(p[0])); };
 // золотая иллюстрация упаковки (оригинальная графика, не фото производителя)
@@ -2204,7 +2150,7 @@ const Z = [
     facts:[['Эффект','через 7–14 дней'],['Держится','3–4 месяца']], label:'Препараты', preps:['Сертифицированный ботулотоксин'] },
   { id:'cheek', zone:'Щёки', title:'Мезотерапия лица', short:'Акне, купероз, пигментация', x:38, y:42, side:'left', rw:7, rh:9, img:'z-cheek.jpg', zoom:'×5.0',
     text:'Коктейль под задачу кожи: лечение акне, купероза и пигментации, выравнивание тона и рельефа.',
-    facts:[['Курс','4–6 процедур'],['Интервал','7–14 дней']], label:'Препараты', preps:['NCTF Filorga','Melsmon','Коктейль «Монако»','Akvavita Revital SA'] },
+    facts:[['Курс','4–6 процедур'],['Интервал','7–14 дней']], label:'Препараты', preps:['NCTF Filorga','Коктейль «Монако»','Akvavita Revital SA'] },
   { id:'nasolabial', zone:'Носогубные складки', title:'Контурная пластика', short:'Заполняет носогубные складки', x:44.5, y:46.5, side:'left', rw:5, rh:7, img:'z-nasolabial.jpg', zoom:'×3.0',
     text:'Филлер на основе гиалуроновой кислоты заполняет складку изнутри. Лицо выглядит свежее без эффекта «переделанности».',
     facts:[['Эффект','сразу'],['Держится','9–12 месяцев']], label:'Филлеры', preps:['Stylage','Корейские филлеры'] },
@@ -2483,13 +2429,11 @@ R.service = (q, slug) => {
 };
 R.prices = () => {
   PAGE.innerHTML = `<div class="page">${head(['<span>Цены</span>'], 'Прозрачные <em>цены</em>', 'Окончательная стоимость зависит от объёма препарата и определяется на консультации. Скрытых доплат нет.')}
-    <div class="toolbar ptabs" style="margin-bottom:0"><div class="chips" id="pt">${PRICES.map(g => `<a class="chip" href="#pg-${g.cat}" data-k="${g.cat}">${g.t}</a>`).join('')}<a class="chip" href="#pg-allpreps" data-k="allpreps">Все препараты</a></div>
+    <div class="toolbar ptabs" style="margin-bottom:0"><div class="chips" id="pt">${PRICES.map(g => `<a class="chip" href="#pg-${g.cat}" data-k="${g.cat}">${g.t}</a>`).join('')}</div>
       <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="input" id="pq" type="search" placeholder="Найти услугу" aria-label="Поиск по прайсу"></label></div>
     <div id="pl">${PRICES.map(g => `<section class="pgroup" id="pg-${g.cat}"><h2>${g.t}</h2>${g.rows.map(r => `<div class="prow" data-s="${esc((r[1] + ' ' + r[2]).toLowerCase())}">
       <div class="nm">${r[0] === 'consult' ? r[1] : `<a href="#/service/${r[0]}">${r[1]}</a>`}${r[2] ? `<small>${r[2]}</small>` : ''}</div>
       <span class="pr2">${r[3]}</span><a class="btn add" href="#/booking/${r[0]}">Записаться</a></div>`).join('')}</section>`).join('')}</div>
-    <section class="pgroup allpreps" id="pg-allpreps"><h2>Все препараты</h2><p class="ap-lead">Препараты, с которыми я работаю. Конкретный препарат и объём подбираю на консультации — под задачу и особенности вашей кожи.</p>
-      ${PREPS_ALL.map(g => `<div class="ap-g"><h3>${g.t}${g.d ? `<small>${g.d}</small>` : ''}</h3>${g.b.map(([n, c, L]) => `<div class="ap-b">${n ? `<div class="ap-n"><b>${esc(n)}</b>${c ? `<span>${c}</span>` : ''}</div>` : ''}<div class="ap-t">${L.map(x => `<i>${esc(x)}</i>`).join('')}</div></div>`).join('')}</div>`).join('')}</section>
     <p class="note" style="margin-top:28px">Цены не являются публичной офертой. Имеются противопоказания, необходима консультация специалиста.</p></div>`;
   PAGE.querySelector('#pt').onclick = e => { const a = e.target.closest('a'); if (!a) return; e.preventDefault(); const el = document.getElementById('pg-' + a.dataset.k); scrollTo({ top: el.getBoundingClientRect().top + scrollY - 150, behavior: 'smooth' }); };
   PAGE.querySelector('#pq').oninput = e => { const t = e.target.value.trim().toLowerCase();
@@ -3014,10 +2958,6 @@ const INNOV = {
     ['Neauvia', 'Гиалуроновая кислота', 'Увлажнение и упругость', '10 900 ₽'],
   ],
   news: [
-    ['Окт 2024', 'FDA одобрило Botox Cosmetic для коррекции вертикальных тяжей шеи (платизмы). Это уже четвёртое эстетическое показание препарата.', 'Healio', 'https://www.healio.com/news/dermatology/20260224/the-gift-that-keeps-on-giving-eight-fdaapproved-neuromodulators-with-more-to-come'],
-    ['Ноя 2024', 'В США одобрен новый ботулотоксин Letybo для межбровных морщин: эффект через 2–3 дня, держится 3–4 месяца.', 'Healio', 'https://www.healio.com/news/dermatology/20260224/the-gift-that-keeps-on-giving-eight-fdaapproved-neuromodulators-with-more-to-come'],
-    ['2026', 'В третьей фазе испытаний «быстрый» токсин серотипа E: начинает работать примерно через 8 часов и действует 2–3 недели. Идеален перед событием.', 'Healio', 'https://www.healio.com/news/dermatology/20260224/the-gift-that-keeps-on-giving-eight-fdaapproved-neuromodulators-with-more-to-come'],
-    ['Июл 2026', 'FDA вернуло на доработку заявку на первый жидкий, готовый к применению ботулотоксин Relfydess. Аналитики ждут одобрения в течение 9–12 месяцев.', 'Swissinfo', 'https://www.swissinfo.ch/eng/galderma-slumps-after-fda-turns-down-botox-rival-relfydess/91679656'],
     ['Сен 2026', 'Опрос NewBeauty: интерес к регенеративной эстетике растёт, но врачи напоминают, что «терминология опережает науку». Выбирайте методики с доказанной эффективностью.', 'NewBeauty', 'https://www.newbeauty.com/view/regenerative-aesthetics-state-of-aesthetics-2026'],
   ],
 };

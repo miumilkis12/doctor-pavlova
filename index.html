@@ -1220,6 +1220,19 @@ body.is-scrolling .rv-track, body.is-scrolling .mq-track { animation-play-state:
 .iv3d-col { --gx: 66%; } @media (max-width: 860px) { .iv3d-col { --gx: 50%; --gy: 38%; } }
 @keyframes ivGlow { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
 
+/* ===== «Все препараты» на странице цен ===== */
+.allpreps .ap-lead { margin: 14px 0 6px; color: var(--muted); max-width: 720px; }
+.ap-g { margin-top: 26px; }
+.ap-g h3 { font-family: 'Prata', serif; font-weight: 400; font-size: clamp(18px, 1.8vw, 22px); display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(232,189,138,.22); }
+.ap-g h3 small { font-family: 'Manrope', sans-serif; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.ap-b { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 6px 18px; padding: 12px 0; border-bottom: 1px solid rgba(232,189,138,.1); align-items: start; }
+.ap-b > .ap-t:only-child { grid-column: 1 / -1; }
+.ap-n b { display: block; font-weight: 600; }
+.ap-n span { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ap-t { display: flex; flex-wrap: wrap; gap: 8px; }
+.ap-t i { font-style: normal; font-size: 13.5px; padding: 6px 12px; border: 1px solid rgba(232,189,138,.32); border-radius: 999px; background: rgba(232,189,138,.06); white-space: nowrap; }
+@media (max-width: 700px) { .ap-b { grid-template-columns: 1fr; } .ap-t i { white-space: normal; } }
+
 /* ===================== beauty-quiz ===================== */
 .quiz { margin-top: 8px; }
 .qz-card { position: relative; overflow: hidden; isolation: isolate; color: #f6ece1; padding: clamp(24px, 4vw, 52px);
@@ -2103,6 +2116,46 @@ const PREPCAT = [
   ['монако', 'Коктейль «Монако»', 'Мезококтейль', '', 'vial'],
   ['akvavita', 'Akvavita Revital SA', 'Янтарная кислота', '', 'vial'],
 ];
+// полный список препаратов в работе (без цен) — блок «Все препараты» на странице цен
+const PREPS_ALL = [
+  { t: 'Филлеры', d: 'губы, контур, объём', b: [
+    ['Juvederm', 'Франция', ['Ultra 3', 'Ultra Smile']],
+    ['Stylage', 'Франция', ['S', 'M', 'L', 'XL', 'Hydro', 'Hydro Max', 'Lips Special']],
+    ['Belotero', 'Европа', ['Revive', 'Balance', 'Soft', 'Intense', 'Hydro', 'Lips Contour', 'Lips Shape']],
+    ['Neauvia Organic', 'Италия', ['Hydro Deluxe', 'Intense Lips', 'Intense', 'Stimulate']],
+    ['Teosyal', 'Швейцария', ['Redensity II']],
+    ['Hyamax', 'Швейцария', ['Extra Deep', 'Deep', 'Lips', 'Contour']],
+    ['Medeyra', '', ['Fine', 'Deep', 'Shape']],
+    ['Rejeunesse', 'Корея', ['Shape', 'Deep', 'Fine']],
+    ['Elasty', 'Корея', ['F', 'D', 'G']],
+    ['Tesoro', 'Корея', ['Fine', 'Deep', 'Sub-Q', 'Implant', 'Rouge', 'Collagen']],
+    ['Soon Soo Fill (E.P.T.Q.)', 'Корея', ['100', '300', '500']] ] },
+  { t: 'Биоревитализация', d: 'увлажнение и качество кожи', b: [
+    ['Novacutan', 'Франция', ['S-Bio', 'Y-Bio', 'Bio-PRO', 'F-Bio', 'F-Bio DVS', 'Bright', 'Gentle', 'Eye', 'Prima', 'Master']],
+    ['REVI', 'Россия', ['Eye', 'Silk', 'Strong', 'Style']],
+    ['Биогель', 'Россия', ['NAD+', 'PDRN WOW Eyes', 'PDRN Face', 'Hair B', 'Monako', 'Стройность']],
+    ['Profhilo', 'Италия', ['H+L']],
+    ['Jalupro', 'Италия', ['Classic', 'HMW', 'Super Hydro']],
+    ['Plinest', 'Италия', ['Plinest', 'Plinest Fast']],
+    ['Aquashine', 'Корея', ['Classic', 'BR', 'PTX']],
+    ['Другие', '', ['Ejal 40', 'Hyaron', 'Kiara Reju', 'Gem Vous', 'Ireju Aqua', 'Mesoten Aqualight']] ] },
+  { t: 'Мезотерапия', d: 'коктейли под задачу кожи', b: [
+    ['Filorga', 'Франция', ['NCTF 135 HA']],
+    ['Meso', 'США', ['Meso-Wharton P199', 'Meso-Xanthin', 'Mesoeye C71', 'Mesosculpt C71']],
+    ['Dermaheal', 'Корея', ['SR', 'SB', 'LL', 'HL', 'HSR', 'Eye Bag Solution', 'Dark Circle Solution']],
+    ['Плацентарные', '', ['Laennec', 'Melsmon']],
+    ['Другие', '', ['Hair Filler', 'PB Serum «Триада»']] ] },
+  { t: 'Коллаген и стимуляторы', d: 'плотность, рубцы, лифтинг', b: [
+    ['Collost', 'Россия', ['Micro', '7%', '15%']],
+    ['Nithya', 'Италия', ['Face', 'Shield', 'Smooth', 'Stimulate']],
+    ['Коллаген', '', ['Karisma', 'Linerase']],
+    ['Полимолочная кислота', '', ['Aesthefill', 'Fize PLA', 'Richesse PLA', 'Juvelook PLA/HA']],
+    ['Radiesse', 'Германия', ['Radiesse', 'Radiesse Lido']] ] },
+  { t: 'Липолитики', d: 'лицо и тело', b: [
+    ['', '', ['Pi', 'Lipo Long', 'Lipolab PPC', 'Lipolab V-line', 'Super V-line Solution', 'DR.Lipo+ (тело)', 'DR.Lipo+ V (лицо)', 'Light Fit', 'F & B']] ] },
+  { t: 'Пилинги', d: '', b: [
+    ['', '', ['BioRePeelCl3', 'PRX-T33']] ] },
+];
 const prepOf = t => { const s = String(t).toLowerCase(); return PREPCAT.find(p => s.includes(p[0])); };
 // золотая иллюстрация упаковки (оригинальная графика, не фото производителя)
 function prepSVG(p, w = 120) {
@@ -2430,11 +2483,13 @@ R.service = (q, slug) => {
 };
 R.prices = () => {
   PAGE.innerHTML = `<div class="page">${head(['<span>Цены</span>'], 'Прозрачные <em>цены</em>', 'Окончательная стоимость зависит от объёма препарата и определяется на консультации. Скрытых доплат нет.')}
-    <div class="toolbar ptabs" style="margin-bottom:0"><div class="chips" id="pt">${PRICES.map(g => `<a class="chip" href="#pg-${g.cat}" data-k="${g.cat}">${g.t}</a>`).join('')}</div>
+    <div class="toolbar ptabs" style="margin-bottom:0"><div class="chips" id="pt">${PRICES.map(g => `<a class="chip" href="#pg-${g.cat}" data-k="${g.cat}">${g.t}</a>`).join('')}<a class="chip" href="#pg-allpreps" data-k="allpreps">Все препараты</a></div>
       <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="input" id="pq" type="search" placeholder="Найти услугу" aria-label="Поиск по прайсу"></label></div>
     <div id="pl">${PRICES.map(g => `<section class="pgroup" id="pg-${g.cat}"><h2>${g.t}</h2>${g.rows.map(r => `<div class="prow" data-s="${esc((r[1] + ' ' + r[2]).toLowerCase())}">
       <div class="nm">${r[0] === 'consult' ? r[1] : `<a href="#/service/${r[0]}">${r[1]}</a>`}${r[2] ? `<small>${r[2]}</small>` : ''}</div>
       <span class="pr2">${r[3]}</span><a class="btn add" href="#/booking/${r[0]}">Записаться</a></div>`).join('')}</section>`).join('')}</div>
+    <section class="pgroup allpreps" id="pg-allpreps"><h2>Все препараты</h2><p class="ap-lead">Препараты, с которыми я работаю. Конкретный препарат и объём подбираю на консультации — под задачу и особенности вашей кожи.</p>
+      ${PREPS_ALL.map(g => `<div class="ap-g"><h3>${g.t}${g.d ? `<small>${g.d}</small>` : ''}</h3>${g.b.map(([n, c, L]) => `<div class="ap-b">${n ? `<div class="ap-n"><b>${esc(n)}</b>${c ? `<span>${c}</span>` : ''}</div>` : ''}<div class="ap-t">${L.map(x => `<i>${esc(x)}</i>`).join('')}</div></div>`).join('')}</div>`).join('')}</section>
     <p class="note" style="margin-top:28px">Цены не являются публичной офертой. Имеются противопоказания, необходима консультация специалиста.</p></div>`;
   PAGE.querySelector('#pt').onclick = e => { const a = e.target.closest('a'); if (!a) return; e.preventDefault(); const el = document.getElementById('pg-' + a.dataset.k); scrollTo({ top: el.getBoundingClientRect().top + scrollY - 150, behavior: 'smooth' }); };
   PAGE.querySelector('#pq').oninput = e => { const t = e.target.value.trim().toLowerCase();
